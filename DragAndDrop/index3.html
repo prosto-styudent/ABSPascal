@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Objects</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background-color: #f0f0f0;
+    }
+    .draggable {
+      position: absolute;
+      cursor: grab;
+      opacity: 0.8;
+      transition: transform 0.1s ease;
+    }
+    #object1 {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 69, 0, 0.7); /* Напівпрозорий оранжевий */
+      border-radius: 25%; /* Еліпс */
+      top: 50px;
+      left: 50px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    #object2 {
+      width: 150px;
+      height: 100px;
+      background-color: rgba(34, 139, 34, 0.7); /* Напівпрозорий зелений */
+      clip-path: polygon(0% 50%, 50% 0%, 100% 50%, 50% 100%); /* Ромб */
+      top: 200px;
+      left: 50px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    #object3 {
+      width: 120px;
+      height: 120px;
+      background-color: rgba(65, 105, 225, 0.7); /* Напівпрозорий синій */
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Інший трикутник */
+      top: 350px;
+      left: 50px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div id="object1" class="draggable"></div>
+  <div id="object2" class="draggable"></div>
+  <div id="object3" class="draggable"></div>
+
+  <script>
+    let activeObject = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    document.querySelectorAll('.draggable').forEach(obj => {
+      obj.addEventListener('mousedown', (e) => {
+        activeObject = e.target;
+        offsetX = e.clientX - activeObject.offsetLeft;
+        offsetY = e.clientY - activeObject.offsetTop;
+        activeObject.style.cursor = 'grabbing';
+        document.addEventListener('mousemove', dragObject);
+        document.addEventListener('mouseup', stopDragging);
+      });
+    });
+
+    function dragObject(e) {
+      if (activeObject) {
+        activeObject.style.transform = `translate(${e.clientX - offsetX}px, ${e.clientY - offsetY}px)`;
+      }
+    }
+
+    function stopDragging() {
+      if (activeObject) {
+        activeObject.style.cursor = 'grab';
+        activeObject.style.transform = 'none';
+      }
+      activeObject = null;
+      document.removeEventListener('mousemove', dragObject);
+      document.removeEventListener('mouseup', stopDragging);
+    }
+  </script>
+</body>
+</html>
