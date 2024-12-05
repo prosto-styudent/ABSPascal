@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Objects</title>
+  <style>
+    .draggable {
+      position: absolute;
+      cursor: grab;
+      opacity: 0.7; /* Напівпрозорість */
+    }
+    #object1 {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(255, 0, 0, 0.7); /* Напівпрозорий червоний */
+      border-radius: 50%; /* Круг */
+      top: 50px;
+      left: 50px;
+    }
+    #object2 {
+      width: 120px;
+      height: 70px;
+      background-color: rgba(0, 255, 0, 0.7); /* Напівпрозорий зелений */
+      top: 200px;
+      left: 50px;
+    }
+    #object3 {
+      width: 100px;
+      height: 100px;
+      background-color: rgba(0, 0, 255, 0.7); /* Напівпрозорий синій */
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Трикутник */
+      top: 350px;
+      left: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="object1" class="draggable"></div>
+  <div id="object2" class="draggable"></div>
+  <div id="object3" class="draggable"></div>
+
+  <script>
+    let activeObject = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    document.querySelectorAll('.draggable').forEach(obj => {
+      obj.addEventListener('mousedown', (e) => {
+        activeObject = e.target;
+        offsetX = e.clientX - activeObject.offsetLeft;
+        offsetY = e.clientY - activeObject.offsetTop;
+        document.addEventListener('mousemove', dragObject);
+        document.addEventListener('mouseup', stopDragging);
+      });
+    });
+
+    function dragObject(e) {
+      if (activeObject) {
+        activeObject.style.left = `${e.clientX - offsetX}px`;
+        activeObject.style.top = `${e.clientY - offsetY}px`;
+      }
+    }
+
+    function stopDragging() {
+      activeObject = null;
+      document.removeEventListener('mousemove', dragObject);
+      document.removeEventListener('mouseup', stopDragging);
+    }
+  </script>
+</body>
+</html>
