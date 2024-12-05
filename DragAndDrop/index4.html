@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draggable Objects</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e0f7fa, #80deea);
+    }
+    .draggable {
+      position: absolute;
+      cursor: grab;
+      opacity: 0.85;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+    }
+    #object1 {
+      width: 120px;
+      height: 120px;
+      background-color: rgba(255, 165, 0, 0.8); /* Напівпрозорий помаранчевий */
+      border-radius: 50%; /* Круг */
+      top: 50px;
+      left: 50px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    #object2 {
+      width: 140px;
+      height: 90px;
+      background-color: rgba(60, 179, 113, 0.8); /* Напівпрозорий зелений */
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Ромб */
+      top: 200px;
+      left: 100px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    #object3 {
+      width: 110px;
+      height: 110px;
+      background-color: rgba(70, 130, 180, 0.8); /* Напівпрозорий синій */
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%); /* Трикутник */
+      top: 350px;
+      left: 200px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    .dragging {
+      transform: scale(1.1); /* Збільшення при перетягуванні */
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="object1" class="draggable"></div>
+  <div id="object2" class="draggable"></div>
+  <div id="object3" class="draggable"></div>
+
+  <script>
+    let activeObject = null;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    document.querySelectorAll('.draggable').forEach(obj => {
+      obj.addEventListener('mousedown', (e) => {
+        activeObject = e.target;
+        offsetX = e.clientX - activeObject.offsetLeft;
+        offsetY = e.clientY - activeObject.offsetTop;
+        activeObject.classList.add('dragging');
+        activeObject.style.cursor = 'grabbing';
+        document.addEventListener('mousemove', dragObject);
+        document.addEventListener('mouseup', stopDragging);
+      });
+    });
+
+    function dragObject(e) {
+      if (activeObject) {
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+        const maxX = window.innerWidth - activeObject.offsetWidth;
+        const maxY = window.innerHeight - activeObject.offsetHeight;
+
+        newX = Math.max(0, Math.min(newX, maxX));
+        newY = Math.max(0, Math.min(newY, maxY));
+
+        activeObject.style.left = `${newX}px`;
+        activeObject.style.top = `${newY}px`;
+      }
+    }
+
+    function stopDragging() {
+      if (activeObject) {
+        activeObject.classList.remove('dragging');
+        activeObject.style.cursor = 'grab';
+      }
+      activeObject = null;
+      document.removeEventListener('mousemove', dragObject);
+      document.removeEventListener('mouseup', stopDragging);
+    }
+  </script>
+</body>
+</html>
